@@ -4,13 +4,13 @@ import re
 from rich import print as rprint
 
 FIRST_WORD = "ORATE"
-BAG_OF_WORDS = open("words.txt").read().split()
+BAG_OF_WORDS = [w for w in open("wordsv2.txt").read().split() if len(w) == 5]
 LETTERS_FREQ = {
     z.split(",")[0]: float(z.split(",")[1]) for z in open("letters.txt").read().split()
 }
-YELLOW = "[yellow]{}[/yellow]"
-GREEN = "[green]{}[/green]"
-GRAY = "[gray]{}[/gray]"
+YELLOW = "[yellow][bold]{}[/bold][/yellow]"
+GREEN = "[green][bold]{}[/bold][/green]"
+GRAY = "[gray][bold]{}[/bold][/gray]"
 
 
 def score_word(w):
@@ -18,19 +18,22 @@ def score_word(w):
 
 
 class Wordle:
-    def __init__(self):
-        self.word = random.choice(BAG_OF_WORDS)
+    def __init__(self, word=None):
+        if word:
+            self.word = word
+        else:
+            self.word = random.choice(BAG_OF_WORDS)
         self.tries = 6
 
     def print_check(self, word, results):
         fw = ""
         for i, x in enumerate(results):
             if x == "v":
-                fw += GREEN.format(word[i])
+                fw += GREEN.format(word[i].upper())
             elif x == "a":
-                fw += YELLOW.format(word[i])
+                fw += YELLOW.format(word[i].upper())
             else:
-                fw += GRAY.format(word[i])
+                fw += GRAY.format(word[i].upper())
         rprint(fw)
 
     def check(self, word):
@@ -104,6 +107,7 @@ class WordleSolver:
                 self.add_gray(word[i])
 
         self._reroll_bag()
+        # rprint(self.yellow_letters)
         if result.count("v") == 5:
             return True
 
@@ -125,8 +129,8 @@ class WordleSolver:
 
 
 class WorldeInterface:
-    def __init__(self) -> None:
-        self.game = Wordle()
+    def __init__(self, word=None) -> None:
+        self.game = Wordle(word)
         self.solver = WordleSolver()
 
     def step(self):
@@ -141,5 +145,5 @@ class WorldeInterface:
 
 
 if __name__ == "__main__":
-    w = WorldeInterface()
+    w = WorldeInterface()  # tangy
     w.step()

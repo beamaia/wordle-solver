@@ -2286,6 +2286,7 @@ takes
 tales
 talks
 tanks
+tangy
 tapes
 tasks
 taste
